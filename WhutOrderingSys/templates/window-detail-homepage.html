@@ -1,0 +1,39 @@
+{% extends 'window-detail-base.html' %}
+{% block title %}窗口详情首页{% endblock %}
+{% block subTtile %}窗口首页{% endblock %}
+{% block right %}
+    <div class="right companycenter layout grouping" >
+		<div class="head">
+			<h1>全部菜品</h1>
+			<a class="green fr more" href="{% url 'orderWindows:window_detail_dishes' windowinfo.id %}">查看更多  >  </a>
+		</div>
+		<div class="brief group_list">
+            {% for dish in windowinfo.dishinfo_set.all|slice:'3' %}
+                <div class="module1_5 box">
+                    <a href="{% url 'dishes:dish_detail' dish.id %}"><img width="214" src="{{ MEDIA_URL }}{{ dish.image }}"/></a>
+                    <div class="des">
+                        <a href="{% url 'dishes:dish_detail' dish.id %}"><h2>{{ dish.name }}</h2></a>
+                        <span class="fl">价格：<i class="key">{{ dish.price }}</i></span>
+                        <span class="fr">销量：{{ dish.order_num }}</span>
+                    </div>
+                    <div class="bottom">
+                        <span class="fl">{{ dish.window.name }}</span>
+                         <span class="star fr  notlogin
+                            " data-favid="13"  data-fav-type="4">
+                            {{ dish.love_num }}
+                        </span>
+                    </div>
+                </div>
+            {% endfor %}
+		</div>
+	</div>
+    <div class="right companycenter layout" >
+    <div class="head">
+        <h1>窗口介绍</h1>
+        <a class="green fr more" href="{% url 'orderWindows:window_detail_intro' windowinfo.id %}">查看更多  >  </a>
+    </div>
+    <div class="cont">
+    	<p>{{ windowinfo.desc }}</p>
+    </div>
+</div>
+{% endblock %}

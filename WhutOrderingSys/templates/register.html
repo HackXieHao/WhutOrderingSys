@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+
+<head>
+	<meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" >
+    <title>用户注册</title>
+    <link rel="stylesheet" href="{% static 'css/layui.css' %}"/>
+    <link rel="stylesheet" href="{% static 'css/login_1.css' %}">
+</head>
+
+<body>
+<div class="login-wrapper">
+
+    <div class=" login-body">
+        <div class="layui-card">
+            <div class="layui-card-header">
+                <i class="layui-icon layui-icon-engine"></i>&nbsp;&nbsp;用户注册
+            </div>
+            <div class="layui-card-body layui-form layui-form-pane">
+
+                <form action="{% url 'users:user_register' %}" method="post">
+                    {% csrf_token %}
+                    <div class="layui-form-item">
+                        <label class="layui-form-label"><i class="layui-icon layui-icon-username"></i></label>
+                        <div class="layui-input-block">
+                            <input name="username" type="text" lay-verify="required" placeholder="请使用学号注册"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label"><i class="layui-icon layui-icon-survey"></i></label>
+                        <div class="layui-input-block">
+                            <input name="email" type="text" lay-verify="required" placeholder="请输入您的邮箱"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label"><i class="layui-icon layui-icon-password"></i></label>
+                        <div class="layui-input-block">
+                            <input name="password_1" type="password" lay-verify="required" placeholder="请输入您的密码"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label"><i class="layui-icon layui-icon-password"></i></label>
+                        <div class="layui-input-block">
+                            <input name="password_2" type="password" lay-verify="required" placeholder="再次输入密码"
+                                   class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                       <p style="color: red">
+                           {{ msg }}
+                           {% for key, val in user_registerForm.errors.items %}
+                            {{ val }}
+                           {% endfor %}
+                       </p>
+                    </div>
+                    <div class="layui-form-item">
+                        <a href="{% url 'users:user_login' %}" class="layui-link">已有帐号，去登录</a>
+                    </div>
+                    <div class="layui-form-item">
+                        <!--<button lay-filter="login-submit" class="layui-btn layui-btn-fluid" lay-submit th:text="#{login.login_btn}">登 录</button>-->
+                        <input type="submit" class="layui-btn layui-btn-fluid">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="login-footer">
+        <p>© 2019 万振宇</p>
+    </div>
+</div>
+
+<script type="text/javascript" src="{% static 'js/layui/layui.js' %}"></script>
+</body>
+</html>

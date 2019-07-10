@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+
+<head>
+	<meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" >
+    <title>用户登录</title>
+    <link rel="stylesheet" href="{% static 'css/layui.css' %}"/>
+    <link rel="stylesheet" href="{% static 'css/login_1.css' %}">
+</head>
+
+<body>
+<div class="login-wrapper">
+
+    <div class=" login-body">
+        <div class="layui-card">
+            <div class="layui-card-header">
+                <i class="layui-icon layui-icon-engine"></i>&nbsp;&nbsp;用户登录
+            </div>
+            <div class="layui-card-body layui-form layui-form-pane">
+
+                <form action="{% url 'users:user_login' %}" method="post">
+                    {% csrf_token %}
+                    <div class="layui-form-item">
+                        <label class="layui-form-label"><i class="layui-icon layui-icon-username"></i></label>
+                        <div class="layui-input-block">
+                            <input name="username" type="text" lay-verify="required" placeholder="请输入学号"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label"><i class="layui-icon layui-icon-password"></i></label>
+                        <div class="layui-input-block">
+                            <input name="password" type="password" lay-verify="required" placeholder="请输入密码"
+                                   class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                       <p style="color: red">
+                           {{ msg }}
+                           {% for key, val in user_loginform.errors.items %}
+                            {{ val }}
+                           {% endfor %}
+                       </p>
+                    </div>
+                    <div class="layui-form-item">
+                        <a href="{% url 'users:user_register' %}" class="layui-link">没有账号？前往注册</a>
+{#                        <a href="{% url 'users:user_forgetpwd' %}" class="layui-link pull-right">忘记密码？</a>#}
+                    </div>
+                    <div class="layui-form-item">
+                        <!--<button lay-filter="login-submit" class="layui-btn layui-btn-fluid" lay-submit th:text="#{login.login_btn}">登 录</button>-->
+                        <input type="submit" class="layui-btn layui-btn-fluid">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div style="position: relative; left: 52%;font-size: 16px">
+        <a href="http://127.0.0.1:8000/xadmin/" style="color: white;text-decoration: underline">管理员登录入口</a>
+    </div>
+    <div class="login-footer">
+        <p>© 2019 谢豪</p>
+    </div>
+</div>
+
+<script type="text/javascript" src="{% static 'js/layui/layui.js' %}"></script>
+</body>
+</html>

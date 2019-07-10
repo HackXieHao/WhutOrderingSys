@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block title %}菜品列表{% endblock %}
+{% block content %}
+    <section>
+        <div class="wp">
+            <ul  class="crumbs">
+                <li><a href="/">首页</a>></li>
+                <li>菜品</li>
+            </ul>
+        </div>
+    </section>
+    <section>
+	<div class="wp">
+		<div class="list" style="margin-top:0;">
+			<div class="left layout">
+				<div class="head">
+					<ul class="tab_header">
+						<li {% if type == '' %} class="active" {% endif %}><a href="?sort=">新品 </a></li>
+						<li {% if type == 'order_num' %}class="active"{% endif %} ><a href="?sort=order_num">销量最高</a></li>
+						<li {% if type == 'love_num' %}class="active"{% endif %}><a href="?sort=love_num">收藏数</a></li>
+					</ul>
+				</div>
+                <div id="inWindow">
+                    <div class="tab_cont " id="content">
+					<div class="group_list">
+                        {% for dish in pages %}
+                            <div class="box">
+                                <a href="{% url 'dishes:dish_detail' dish.id %}">
+                                    <img width="280" height="350" class="scrollLoading" src="{{ MEDIA_URL }}{{ dish.image }}"/>
+                                </a>
+                                <div class="des">
+                                    <a href="{% url 'dishes:dish_detail' dish.id %}">
+                                        <h2>{{ dish.name }}</h2>
+                                    </a>
+                                    <span class="fl">价格：<i class="key">{{ dish.price }}</i></span>
+                                    <span class="fr">销量：{{ dish.order_num }}&nbsp;&nbsp;</span>
+                                </div>
+                                <div class="bottom">
+                                    <a href="{% url 'orderWindows:window_detail' dish.window.id %}"><span class="fl">{{ dish.window.name }}</span></a>
+                                    <span class="star fr  notlogin
+                                        " data-favid="15">
+                                        {{ dish.love_num }}
+                                    </span>
+                                </div>
+                            </div>
+                        {% endfor %}
+					</div>
+                    <div class="pageturn">
+                        <ul class="pagelist">
+
+                            {% if pages.has_previous %}
+                                <li class="long"><a href="?page={{ pages.previous_page_number }}&sort={{ type }}">上一页</a></li>
+                            {% endif %}
+
+                            {% for num in pages.paginator.page_range %}
+                                <li {% if num == pages.number %}class="active"{% endif %}><a href="?page={{ num }}&sort={{ type }}" class="page">{{ num }}</a></li>
+                            {% endfor %}
+
+                            {% if pages.has_next %}
+                                <li class="long"><a href="?page={{ pages.next_page_number }}&sort={{ type }}">下一页</a></li>
+                            {% endif %}
+
+                        </ul>
+                    </div>
+				</div>
+                </div>
+			</div>
+			<div class="right layout">
+				<div class="head">热门推荐</div>
+				<div class="group_recommend">
+                    {% for recommend in recommend_list %}
+                        <dl>
+                            <dt>
+                                <a target="_blank" href="{% url 'dishes:dish_detail' recommend.id %}">
+                                    <img width="240" height="220" class="scrollLoading" src="{{ MEDIA_URL }}{{ recommend.image }}"/>
+                                </a>
+                            </dt>
+                            <dd>
+                                <a target="_blank" href="{% url 'dishes:dish_detail' recommend.id %}"><h2> {{ recommend.name }}</h2></a>
+                                <span class="fl">销量：<i class="key">{{ recommend.order_num }}</i></span>
+                            </dd>
+                        </dl>
+                    {% endfor %}
+
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+{% endblock %}

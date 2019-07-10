@@ -1,0 +1,110 @@
+{% extends 'UserManage/usermanage-base.html' %}
+{% block title %}个人资料{% endblock %}
+{% block subTitle %}个人信息{% endblock %}
+{% load staticfiles %}
+{% block right %}
+    <div class="right">
+		<div class="personal_des ">
+			<div class="head" style="border:1px solid #eaeaea;">
+				<h1>个人信息</h1>
+			</div>
+			<div class="inforcon">
+				<div class="left" style="width:242px;">
+                    <iframe id='frameFile' name='frameFile' style='display: none;'></iframe>
+                    <form class="clearfix" id="jsAvatarForm" enctype="multipart/form-data" autocomplete="off" method="post" action="{% url 'users:usermanage_changeimage' %}" target='frameFile'>
+                        {% csrf_token %}
+                        <label class="changearea" for="avatarUp">
+                            <span id="avatardiv" class="pic">
+                                <img width="100" height="100" class="js-img-show" id="avatarShow" src="{{ MEDIA_URL }}{{ request.user.image }}"/>
+                            </span>
+                            <span class="fl upload-inp-box" style="margin-left:70px;">
+                                <span class="button btn-green btn-w100" id="jsAvatarBtn">修改头像</span>
+                                <input type="file" name="image" id="avatarUp" class="js-img-up"/>
+                            </span>
+                        </label>
+                    </form>
+                    <div style="border-top:1px solid #eaeaea;margin-top:30px;">
+                        <a class="button btn-green btn-w100" id="jsUserResetPwd" style="margin:80px auto;width:100px;">修改密码</a>
+                    </div>
+				</div>
+				<form class="perinform" id="jsEditUserForm" autocomplete="off" action="{% url 'users:usermanage_changeinfo' %}" method="post">
+                    {% csrf_token %}
+					<ul class="right">
+						<li>学&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;号：
+                           <input type="text" name="student_code" id="nick_name" value="{{ request.user.student_code }}" maxlength="13">
+                            <i class="error-tips"></i>
+                        </li>
+						<li>姓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;名：
+                           <input type="text" name="name" id="nick_name" value="{{ request.user.name }}" placeholder="请输入您的姓名" maxlength="10">
+                            <i class="error-tips"></i>
+                        </li>
+						<li>性&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;别：
+							<label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio"  name="gender" value="boy" {% if request.user.gender == 'boy' %}checked="checked"{% endif %}>男</label>
+							<label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="gender" value="girl" {% if request.user.gender == 'girl' %}checked="checked"{% endif %}>女</label>
+						</li>
+						<li>手&nbsp;&nbsp;机&nbsp;&nbsp;号：
+                            <input type="text" name="phone" id="mobile" placeholder="请输入你的手机号码" value="{{ request.user.phone|default_if_none:'' }}" maxlength="11">
+                        </li>
+                        <li>地&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;址：
+                            <input type="text" name="address" id="mobile" placeholder="请输入你的地址" value="{{ request.user.address|default_if_none:'' }}" maxlength="100">
+                        </li>
+                        <li>邮&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;箱：
+                            <input type="text" name="email" value="{{ request.user.email }}">
+                        </li>
+						<li class="button heibtn">
+							<input type="submit" id="jsEditUserBtn" value="保存">
+						</li>
+					</ul>
+				</form>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+{% block dialog %}
+    <div class="dialog" id="jsDialog">
+    <div class="successbox dialogbox" id="jsSuccessTips">
+        <h1>成功提交</h1>
+        <div class="close jsCloseDialog"><img src="../images/dig_close.png"/></div>
+        <div class="cont">
+            <h2>您的需求提交成功！</h2>
+            <p></p>
+        </div>
+    </div>
+    <!--提示弹出框-->
+    <div class="bidtips dialogbox promptbox" id="jsComfirmDialig">
+        <h1>确认提交</h1>
+        <div class="close jsCloseDialog"><img src="../images/dig_close.png"/></div>
+        <div class="cont">
+            <h2>您确认提交吗？</h2>
+            <dd class="autoTxtCount">
+                <div class="button">
+                    <input type="button" class="fl half-btn" value="确定" id="jsComfirmBtn"/>
+                    <span class="fr half-btn jsCloseDialog">取消</span>
+                </div>
+            </dd>
+        </div>
+    </div>
+    <div class="resetpwdbox dialogbox" id="jsResetDialog">
+        <h1>修改密码</h1>
+        <div class="close jsCloseDialog"><img src="{% static 'images/dig_close.png' %}"/></div>
+        <div class="cont">
+            <form id="jsResetPwdForm" autocomplete="off" action="{% url 'users:user_changepwd' %}" method="post">
+                {% csrf_token %}
+                <div class="box">
+                    <span class="word2" >新&nbsp;&nbsp;密&nbsp;&nbsp;码</span>
+                    <input type="password" id="pwd" name="password_1" placeholder="6-20位非中文字符"/>
+                </div>
+                <div class="box">
+                    <span class="word2" >确定密码</span>
+                    <input type="password" id="repwd" name="password_2" placeholder="6-20位非中文字符"/>
+                </div>
+                <div class="error btns" id="jsResetPwdTips"></div>
+                <div class="button">
+                    <input id="jsResetPwdBtn" type="submit" value="提交" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+    <div class="bg" id="dialogBg"></div>
+{% endblock %}

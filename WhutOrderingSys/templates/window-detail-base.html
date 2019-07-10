@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block title%}窗口详情{% endblock %}
+{% block mycss %}
+    <link rel="stylesheet" type="text/css" href="{% static 'js/plugins/queryCity/css/cityLayout.css' %}">
+    {% block mysubcss %}
+    {% endblock %}
+{% endblock %}
+{% block headerwrap %}class="headerwrap headerwrap2"{% endblock %}
+{% block middle %}
+        <div class="middle companyheader">
+        <div class="wp">
+            <img class="fl" style="width: 112px;height: 103px" src="{{ MEDIA_URL }}{{ windowinfo.image }}"/>
+            <div class="head fl">
+                <h1 style="margin-top: 45px;">
+                    {{ windowinfo.name }}
+                </h1>
+            </div>
+            <div class="btn fr collectionbtn  notlogin
+                 "data-favid="22" data-fav-type="1" id="loveBtn">
+                 {% if loveWindowStatus %}取消收藏{% else %}收藏{% endif %}
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
+{% block content %}
+    <section>
+	<div class="wp">
+		<ul  class="crumbs">
+            <li><a href="/">首页</a>></li>
+			<li><a href="{% url 'orderWindows:window_list' %}">窗口</a>></li>
+			<li>{% block subTtile %}{% endblock %}</li>
+		</ul>
+	</div>
+</section>
+
+    <section>
+	<div class="wp list personal_list comp">
+		<div class="left">
+			<ul>
+                <li {% if type == '' %} class="active2" {% endif %}><a href="{% url 'orderWindows:window_detail' windowinfo.id %}">窗口首页</a></li>
+                <li {% if type == 'window_detail_dishes' %} class="active2"{% endif %}><a href="{% url 'orderWindows:window_detail_dishes' windowinfo.id %}">窗口菜品</a></li>
+                <li {% if type == 'window_detail_intro' %} class="active2"{% endif %}><a href="{% url 'orderWindows:window_detail_intro' windowinfo.id %}">窗口介绍</a></li>
+			</ul>
+		</div>
+
+        {% block right %}
+
+        {% endblock %}
+
+    </div>
+</section>
+<!--sidebar start-->
+{% endblock %}
+{% block myjs %}
+    <script type="text/javascript" src="{% static 'js/plugins/jquery.raty.js' %}"></script>
+    {% block mysubjs %}
+    {% endblock %}
+    <script>
+        $("#loveBtn").click(function () {
+                var love_id = {{ windowinfo.id }};
+                var love_type = 2;
+                $.ajax({
+                    type:'GET',
+                    url:'{% url 'operations:user_love' %}',
+                    data:{
+                        'loveid':love_id,
+                        'lovetype':love_type
+                    },
+                    success:function (data) {
+                      if(data.status == 'success'){
+                        $("#loveBtn").text(data.msg);
+                      }else {
+                          alert(data.msg);
+                      }
+                    }
+
+                })
+            });
+    </script>
+{% endblock %}
+

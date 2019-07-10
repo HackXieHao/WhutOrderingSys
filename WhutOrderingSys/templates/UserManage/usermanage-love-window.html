@@ -1,0 +1,38 @@
+{% extends 'UserManage/usermanage-base.html' %}
+{% block title %}我的收藏{% endblock %}
+{% block subTitle %}我的收藏{% endblock %}
+{% block right %}
+    <div class="right" >
+            <div class="personal_des Releasecont">
+                <div class="head">
+                    <h1>我的收藏</h1>
+                </div>
+
+            </div>
+            <div class="personal_des permessage">
+                <div class="head">
+                    <ul class="tab_header messagehead">
+                        <li><a href="{% url 'users:user_lovedish' %}">菜品</a></li>
+                        <li class="active"><a href="{% url 'users:user_lovewindow' %}">窗口</a> </li>
+                    </ul>
+                </div>
+                <div class="messagelist">
+                    {% for window in windows %}
+                        <div class="messages butler_list company company-fav-box">
+                            <dl class="des fr">
+                            <dt>
+                                <a href="{% url 'orderWindows:window_detail' window.id  %}">
+                                    <img width="160" height="90" src="{{ MEDIA_URL }}{{ window.image }}"/>
+                                </a>
+                            </dt>
+                            <dd>
+                                <h1><a href="{% url 'orderWindows:window_detail' window.id  %}">{{ window.name }}</a></h1>
+                                <span class="c8 clear">窗口位置：{{ window.window_no }}</span>
+                            </dd>
+                        </dl>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+{% endblock %}

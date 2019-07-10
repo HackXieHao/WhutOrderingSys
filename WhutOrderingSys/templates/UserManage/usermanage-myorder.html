@@ -1,0 +1,124 @@
+{% extends 'UserManage/usermanage-base.html' %}
+{% load staticfiles %}
+{% block title %}我的订购{% endblock %}
+{% block subTitle %}我的订购{% endblock %}
+{% block mycss %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/simpleAlert.css' %}">
+{% endblock %}
+{% block right %}
+    <div class="right" >
+		<div class="personal_des Releasecont">
+			<div class="head">
+				<h1>购物车</h1>
+                <button id="cancelOrder" style="font-size: 16px;color: white;width: 100px;height: 35px;background: red;float: right;margin-right: 20px;margin-top: 8px;cursor: pointer;">取消订单</button>
+                <button id="submitOrder" style="font-size: 16px;color: white;width: 100px;height: 35px;background: #41d01e;float: right;margin-right: 20px;margin-top: 8px;cursor: pointer;">提交订单</button>
+			</div>
+		</div>
+		<div class="personal_des permessage">
+			<div class="companycenter">
+				<div class="group_list brief">
+
+                    {% for order in user_orders %}
+                        <div class="module1_5 box">
+                            <a href="{% url 'dishes:dish_detail' order.dish_id_id %}">
+                                <img width="214" height="190" class="scrollLoading" src="{{ MEDIA_URL }}{{ order.dish_id.image }}"/>
+                            </a>
+                            <div class="des">
+                                <a href="{% url 'dishes:dish_detail' order.dish_id_id %}"><h2>{{ order.dish_id.name }}</h2></a>
+                                <span class="fl">价格：<i class="key">{{ order.dish_id.price }}</i></span>
+                                <span class="fr">销量：{{ order.dish_id.order_num }}</span>
+                            </div>
+                            <div class="bottom">
+                                <span class="fl">{{ order.dish_id.window.name }}</span>
+                                <span class="fr  notlogin" data-favid="15" style="color: #ff7800;">{{ order.number }}</span>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    {% if not user_orders %}
+                        <p style="font-size: 24px;margin-top: 30px;margin-left: 15px;">您的购物车暂时还没有菜品</p>
+                    {% endif %}
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+{% block myjs %}
+    <script type="text/javascript" src="{% static 'js/simpleAlert.js' %}"></script>
+    <script>
+        $("#submitOrder").click(function (e) {
+            var price = 0;
+            {% for order in user_orders %}
+                price += {{ order.dish_id.price }} * {{ order.number }}
+            {% endfor %}
+            var dblChoseAlert = simpleAlert({
+                "title":"订单确认",
+                "content":"您的本次订单共计" + price + "元",
+                "buttons":{
+                    "确定":function () {
+                        $.ajax({
+                            type:'GET',
+                            url:'{% url 'users:user_submitorder' %}',
+                            success:function (data) {
+                                if (data.status == 'success'){
+                                    alert(data.msg);
+                                    window.location.href = 'http://127.0.0.1:8000/users/user_orderInfo/';
+                                }else{
+                                    alert(data.msg);
+                                    window.location.href = 'http://127.0.0.1:8000/dishes/dish_list';
+                                }
+                            }
+                        })
+                        dblChoseAlert.close();
+                    },
+                    "取消":function () {
+                        dblChoseAlert.close();
+                    }
+                }
+            })
+        });
+
+        $("#cancelOrder").click(function (e) {
+            var dblChoseAlert = simpleAlert({
+                "title":"取消订单",
+                "content":"您确认取消本次订单吗？",
+                "buttons":{
+                    "确定":function () {
+                        $.ajax({
+                            type:'GET',
+                            url:'{% url 'users:user_cancelorder' %}',
+                            success:function (data) {
+                                if (data.status == 'success'){
+                                    alert(data.msg);
+                                    window.location.href = 'http://127.0.0.1:8000/users/user_orderInfo/';
+                                }else{
+                                    alert(data.msg);
+                                    window.location.href = 'http://127.0.0.1:8000/users/user_orderInfo/';
+                                }
+                            }
+                        })
+                        dblChoseAlert.close();
+                    },
+                    "取消":function () {
+                        dblChoseAlert.close();
+                    }
+                }
+            })
+        });
+
+    </script>
+{#    <script>#}
+{#        $(function () {#}
+{#            $("#submitOrder").click(function () {#}
+{#                alert("aaa");#}
+{#                $.ajax({#}
+{#                    type:'GET',#}
+{#                    url:'{% url 'users:user_submitorder' %}',#}
+{#                    success:function (data) {#}
+{##}
+{#                    }#}
+{#                })#}
+{##}
+{#            })#}
+{#        })#}
+{#    </script>#}
+{% endblock %}

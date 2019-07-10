@@ -1,0 +1,260 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block title %}菜品详情-{{ dishinfo.name }}{% endblock %}
+{% block mycss %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/simpleAlert.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/common.css' %}">
+{% endblock %}
+{% block content %}
+    <section>
+	<div class="wp">
+		<div class="crumbs">
+			<ul>
+				<li><a href="/">首页</a>></li>
+                <li><a href="{% url 'dishes:dish_list' %}">菜品</a>></li>
+				<li>菜品详情</li>
+			</ul>
+		</div>
+	</div>
+</section>
+    <section>
+	<div class="wp">
+		<div class="groupPurchase_detail detail">
+			<div class="toppro">
+				<div class="left">
+					<div class="picbox">
+						<div class="tb-booth tb-pic">
+							<img width="440" height="445" src="{{ MEDIA_URL }}{{ dishinfo.image }}" class="jqzoom" />
+						</div>
+
+					</div>
+					<div class="des">
+						<h1 title="{{ dishinfo.name }}">{{ dishinfo.name }}</h1>
+						<span class="key">{{ dishinfo.desc }}</span>
+						<div class="prize">
+							<span class="fl" style="font-size: 16px">销量：<i class="key">{{ dishinfo.order_num }}</i></span>
+							<span class="fr" style="font-size: 16px">收藏量：{{ dishinfo.love_num }}</span>
+						</div>
+						<ul class="parameter">
+                            <li><span class="pram word3" style="font-size: 16px">菜&nbsp;品&nbsp;号：</span><span style="font-size: 16px">{{ dishinfo.dish_no }}</span></li>
+                            <li><span class="pram word3" style="font-size: 16px">所属窗口：</span><span title="" style="font-size: 16px">{{ dishinfo.window.name }}</span></li>
+
+						</ul>
+						<div class="btns">
+							<div class="btn colectgroupbtn"  id="jsLeftBtn">
+                                  {% if loveStatus %}取消收藏{% else %}收藏{% endif %}
+                            </div>
+                                <div class="buy btn" id="buyBtn">
+{#                                    {% if orderStatus %}取消订购{% else %}订购{% endif %}#}
+                                    订购
+                                </div>
+                             <div class="buy btn" id="cancelBuyBtn" style="background-color: red">
+    {#                                    {% if orderStatus %}取消订购{% else %}订购{% endif %}#}
+                                        取消订购
+                                    </div>
+                            </div>
+					</div>
+				</div>
+
+				<div class="right">
+					<div class="head">
+						<h1>菜品所属窗口</h1>
+						<p>舌尖的享受</p>
+					</div>
+					<div class="pic">
+                        <a href="{% url 'orderWindows:window_detail' dishinfo.window.id %}">
+                            <img width="150" height="80" src="{{ MEDIA_URL }}{{ dishinfo.window.image }}"/>
+                        </a>
+                    </div>
+					<a href="{% url 'orderWindows:window_detail' dishinfo.window.id %}">
+                        <h2 class="center" title="{{ dishinfo.window.name }}">{{ dishinfo.window.name }}</h2>
+                    </a>
+					<div class="btn  notlogin
+					     "data-favid="14" id="jsRightBt">
+                         {% if loveWindowStatus %}取消收藏{% else %}收藏{% endif %}
+                    </div>
+					<div class="clear">
+						<ul>
+                            <li>
+                                <span style="font-size: 16px">菜 &nbsp;品&nbsp; 数：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   {{ dishinfo.window.dishinfo_set.count }}</span>
+                            </li>
+                            <li><span style="font-size: 16px">窗口编号：&nbsp;&nbsp;{{ dishinfo.window.window_no }}</span></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+    <section>
+	<div class="wp">
+		<div class="list groupPurchase_detail_pro">
+			<div class="left layout">
+				<div class="head">
+					<ul class="tab_header">
+						<li class="active">菜品详情</li>
+					</ul>
+				</div>
+				<div class="tab_cont tab_cont1">
+
+					<p>{{ dishinfo.detail }}</p>
+
+				</div>
+				<div class="tab_cont tab_cont2" >
+					<div class="comment">
+						<div class="comenlist">
+
+	                    </div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+        <div id="dialogBg"></div>
+		<div id="dialog" class="animated">
+{#			<img class="dialogIco" width="50" height="50" src="images/ico.png" alt="" />#}
+			<div class="dialogTop">
+				<a href="javascript:;" class="claseDialogBtn">关闭</a>
+			</div>
+			<form action="{% url 'operations:user_order' dishinfo.id %}" method="post" id="editForm">
+                {% csrf_token %}
+				<ul class="editInfos">
+					<li><label><font color="#ff0000">* </font>数量：<input type="text" name="number" required value="" class="ipt" /></label></li>
+					<li><label><font color="#ff0000">&nbsp; </font>备注：<input type="text" name="desc" required value="" class="ipt" /></label></li>
+					<li><input type="submit" value="确认提交" class="submitBtn" /></li>
+				</ul>
+			</form>
+		</div>
+{% endblock %}
+{% block myjs %}
+    <script type="text/javascript" src="{% static 'js/simpleAlert.js' %}"></script>
+    <script>
+        //收藏
+        $(function () {
+            $("#jsLeftBtn").click(function () {
+                var love_id = {{ dishinfo.id }};
+                var love_type = 1
+                $.ajax({
+                    type:'GET',
+                    url:'{% url 'operations:user_love' %}',
+                    data:{
+                        'loveid':love_id,
+                        'lovetype':love_type
+                    },
+                    success:function (data) {
+                      if(data.status == 'success'){
+                        $("#jsLeftBtn").text(data.msg);
+                      }else {
+                          alert(data.msg);
+                      }
+                    }
+
+                })
+            });
+
+            $("#buyBtn").click(function () {
+                {#alert("aaa");#}
+                className = $(this).attr('class');
+                $('#dialogBg').fadeIn(300);
+                $('#dialog').removeAttr('class').addClass('animated '+className+'').fadeIn();
+                {#var order_id = {{ dishinfo.id }}#}
+                /*$.ajax({
+                    type:'GET',
+                    {#url:'{% url 'operations:user_order' %}',#}
+                    data:{
+                        order_id:order_id
+                    },
+                    success:function (data) {
+                        if(data.status == 'success'){
+                            $('#buyBtn').text(data.msg);
+                        }else {
+                            alert(data.msg);
+                        }
+                    }
+                })*/
+            });
+
+            //关闭弹窗
+            $('.claseDialogBtn').click(function(){
+                $('#dialogBg').fadeOut(300,function(){
+                    $('#dialog').addClass('bounceOutUp').fadeOut();
+                });
+            });
+
+            $("#cancelBuyBtn").click(function (e) {
+                var dblChoseAlert = simpleAlert({
+                    "title":"取消订单",
+                    "content":"您确认取消本次订单吗？",
+                    "buttons":{
+                        "确定":function () {
+                            $.ajax({
+                                type:'GET',
+                                url:'{% url 'operations:user_cancelorder' dishinfo.id %}',
+                                success:function (data) {
+                                    if(data.status == 'success'){
+                                        alert(data.msg);
+                                    }else if(data.status == 'failed'){
+                                        alert(data.msg);
+                                        window.location.href = 'http://127.0.0.1:8000/users/user_login/'
+                                    }else{
+                                        alert(data.msg);
+                                        window.location.href = 'http://127.0.0.1:8000/dishes/dish_detail/{{ dishinfo.id }}/'
+                                    }
+                                }
+                            })
+                            dblChoseAlert.close();
+                        },
+                        "取消":function () {
+                            dblChoseAlert.close();
+                        }
+                    }
+                })
+            });
+
+            /*
+            $("#cancelBuyBtn").click(function () {
+                {#alert("aaaaa");#}
+                $.ajax({
+                    type:'GET',
+                    {#url:'{% url 'operations:user_cancelorder' dishinfo.id %}',#}
+                    success:function (data) {
+                        if(data.status == 'success'){
+                            alert(data.msg);
+                        }else if(data.status == 'failed'){
+                            alert(data.msg);
+                            window.location.href = 'http://127.0.0.1:8000/users/user_login/'
+                        }else{
+                            alert(data.msg);
+                            {#window.location.href = 'http://127.0.0.1:8000/dishes/dish_detail/{{ dishinfo.id }}/'#}
+                        }
+                    }
+                })
+            });*/
+
+            $("#jsRightBt").click(function () {
+                var love_id = {{ dishinfo.window.id }};
+                var love_type = 2;
+                $.ajax({
+                    type:'GET',
+                    url:'{% url 'operations:user_love' %}',
+                    data:{
+                        'loveid':love_id,
+                        'lovetype':love_type
+                    },
+                    success:function (data) {
+                      if(data.status == 'success'){
+                        $("#jsRightBt").text(data.msg);
+                        window.location.href = 'http://127.0.0.1:8000/dishes/dish_detail/{{ dishinfo.id }}/'
+                      }else {
+                          alert(data.msg);
+                      }
+                    }
+
+                })
+            });
+
+
+        })
+    </script>
+{% endblock %}

@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% block title %}窗口列表{% endblock %}
+{% block content %}
+    <section>
+        <div class="wp">
+            <ul  class="crumbs">
+                <li><a href="/">首页</a>></li>
+                <li>窗口列表</li>
+            </ul>
+        </div>
+    </section>
+    <section>
+	<div class="wp butler_list_box list">
+	<div class='left'>
+		<div class="listoptions">
+			<ul>
+				<li>
+					<h2>窗口类别</h2>
+					<div class="cont">
+                        <a href="?wt=&sort={{ sort }}"><span {% if wt == '' %}class="active2" {% endif %}>全部</span></a>
+                            {% for window_t in window_types %}
+                                <a href="?wt={{ window_t.id }}&sort={{ sort }}"><span {% ifequal wt window_t.id %}class="active2"{% endifequal %}>{{ window_t.name }}</span></a>
+                            {% endfor %}
+
+					</div>
+				</li>
+			</ul>
+		</div>
+		<div class="all">共<span class="key">{{ windows.count }}</span>家</div>
+		<div class="butler_list company list">
+		<div class="layout">
+			<div class="head">
+				<ul class="tab_header">
+					<li {% if sort == '' %}class="active"{% endif %}><a href="?sort=&wt={{ wt }}">全部</a> </li>
+                    <li {% if sort == 'window_no' %}class="active"{% endif %}><a href="?sort=window_no&wt={{ wt }}">窗口号 &#8593;</a></li>
+					<li {% if sort == 'love_num' %}class="active"{% endif %}><a href="?sort=love_num&wt={{ wt }}">收藏量 &#8595;</a></li>
+				</ul>
+			</div>
+                {% for window in pages %}
+                    <dl class="des difdes">
+                        <dt>
+                            <a href="{% url 'orderWindows:window_detail' window.id %}">
+                                <img width="200" height="120" class="scrollLoading" data-url="{{ MEDIA_URL }}{{ window.image }}"/>
+                            </a>
+                        </dt>
+                        <dd>
+                            <div class="clearfix">
+                                 <a href="{% url 'orderWindows:window_detail' window.id %}">
+                                     <h1>{{ window.name }}</h1>
+                                 </a>
+                            </div>
+                            <ul class="cont">
+                                <li class="first"><p class="pic9">窗口号：<span>{{ window.window_no }}</span></p><p class="c7">收藏数：<span>{{ window.love_num }}</span></p></li>
+                                <li class="c8" style="padding-left:18px;">窗口类型：{{ window.window_type.name }}</li>
+                                <li class="pic10" style="padding-left:18px;">经典菜品：
+
+                                        {% for dish in window.dishinfo_set.all|dictsortreversed:'order_num'|slice:"2" %}
+                                            <a href="">{{ dish.name }}</a>
+                                        {% endfor %}
+
+                                </li>
+                            </ul>
+                        </dd>
+                    </dl>
+                {% endfor %}
+
+
+		</div>
+		 <div class="pageturn">
+            <ul class="pagelist">
+
+                {% if pages.has_previous %}
+                    <li><a href="?page={{ pages.previous_page_number }}&sort={{ sort }}&wt={{ wt }}" class="page">上一页</a></li>
+                {% endif %}
+
+                {% for num in pages.paginator.page_range %}
+                    <li {% if num == pages.number %}class="active"{% endif %}><a href="?page={{ num }}&sort={{ sort }}&wt={{ wt }}" class="page">{{ num }}</a></li>
+                {% endfor %}
+
+                {% if pages.has_next %}
+                    <li class="long"><a href="?page={{ pages.next_page_number }}&sort={{ sort }}&wt={{ wt }}">下一页</a></li>
+                {% endif %}
+            </ul>
+        </div>
+		</div>
+	</div>
+
+		<div class="right companyrank layout">
+			<div class="head">窗口热度排名</div>
+                {% for w in hot_window %}
+                    <dl class="des">
+                        <dt class="num fl">{{ forloop.counter }}</dt>
+                        <dd>
+                            <a href="{% url 'orderWindows:window_detail' w.id %}"><h1>{{ w.name }}</h1></a>
+                            <p>窗口号：{{ w.window_no }}</p>
+                        </dd>
+                    </dl>
+                {% endfor %}
+            </div>
+        </div>
+</section>
+{% endblock %}

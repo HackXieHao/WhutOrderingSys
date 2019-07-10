@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block title %}武汉理工大学订餐管理系统{% endblock %}
+{% block content %}
+    <section>
+		<div class="module">
+			<div class="wp">
+				<h1 style="margin-top: 20px">菜品</h1>
+				<div class="module1 eachmod">
+					<div class="module1_1 left">
+						<img width="228" height="614" src="{% static 'images/module6_1.jpg' %}"/>
+						<p class="fisrt_word">舌尖上的<br/>校园</p>
+						<a class="more" href="{% url 'dishes:dish_list' %}">查看更多菜品 ></a>
+					</div>
+					<div class="right group_list">
+						<div class="module1_2 box">
+							<div class="imgslide2">
+								<ul class="imgs">
+                                    {% for recomm in recomm_img %}
+                                    <li>
+                                        <a href="{% url 'dishes:dish_detail' recomm.id %}">
+                                            <img width="470" height="300" src="{{ MEDIA_URL }}{{ recomm.image }}" />
+                                        </a>
+                                    </li>
+                                    {% endfor %}
+								</ul>
+							</div>
+							<div class="unslider-arrow2 prev"></div>
+							<div class="unslider-arrow2 next"></div>
+						</div>
+
+                        {% for dish in dish_infos|slice:":6" %}
+                            <div class="module1_{{ forloop.counter|add:"2" }} box">
+                                <a href="{% url 'dishes:dish_detail' dish.id %}">
+                                    <img width="233" height="190" src="{{ MEDIA_URL }}{{ dish.image }}"/>
+                                </a>
+                                <div class="des">
+                                    <a href="{% url 'dishes:dish_detail' dish.id %}">
+                                        <h2 title="{{ dish.name }}">{{ dish.name }}</h2>
+                                    </a>
+                                    <span class="fl">口味：<i class="key">{{ dish.window.name }}</i></span>
+                                    <span class="fr">订购数：{{ dish.order_num }}</span>
+                                </div>
+                                <div class="bottom">
+                                    <span class="fl" title="{{ dish.window.name }}">{{ dish.window.name }}</span>
+                                    <span class="star fr">{{ dish.love_num }}</span>
+                                </div>
+                            </div>
+                        {% endfor %}
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<section>
+		<div class="module greybg">
+			<div class="wp">
+				<h1>窗口</h1>
+				<div class="module3 eachmod">
+					<div class="module3_1 left">
+						<img width="228" height="463" src="{% static 'images/module5_1.jpg' %}"/>
+						<p class="fisrt_word">建设让学生满<br/>意的一流食堂</p>
+						<a class="more" href="{% url 'orderWindows:window_list' %}">查看更多窗口 ></a>
+					</div>
+					<div class="right">
+						<ul>
+                            {% for window in window_infos %}
+                                <li {% if forloop.counter|divisibleby:"5" %} class="five" {% endif %}>
+                                    <a href="{% url 'orderWindows:window_detail' window.id %}">
+                                        <div class="company">
+                                            <img width="184" height="100" src="{{ MEDIA_URL }}{{ window.image }}"/>
+                                            <div class="score">
+                                                <div class="circle">
+                                                    <h2>美味可口</h2>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <p><span class="key" title="{{ window.name }}">{{ window.name }}</span></p>
+                                    </a>
+                                </li>
+                            {% endfor %}
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+{% endblock %}
